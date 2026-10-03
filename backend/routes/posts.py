@@ -13,6 +13,7 @@ def list_posts():
                 'id': p.id,
                 'title': p.title,
                 'content': p.content,
+                'image_url': p.image_url,
                 'user_id': p.user_id
             }
             for p in posts
@@ -26,6 +27,7 @@ def create_post():
     title = data.get('title')
     content = data.get('content')
     user_id = data.get('user_id')
+    image_url = data.get('image_url')
 
     if not title or not content or not user_id:
         return jsonify({
@@ -33,7 +35,7 @@ def create_post():
         }), 400
 
     try:
-        post = PostService.create(title, content, user_id)
+        post = PostService.create(title, content, user_id, image_url = image_url)
 
         return jsonify({
             'message': 'Post created successfully',
@@ -41,6 +43,7 @@ def create_post():
                 'id': post.id,
                 'title': post.title,
                 'content': post.content,
+                'image_url': post.image_url,
                 'user_id': post.user_id
             }
         }), 201
@@ -65,6 +68,7 @@ def get_post(post_id):
             'id': post.id,
             'title': post.title,
             'content': post.content,
+            'image_url': post.image_url,
             'user_id': post.user_id
         }
     }), 200
@@ -75,13 +79,14 @@ def update_post(post_id):
     data = request.get_json(silent = True) or {}
     title = data.get('title')
     content = data.get('content')
+    image_url = data.get('image_url')
 
-    if not title and not content:
+    if not title and not content and image_url is None:
         return jsonify({
-            'error': 'At least one field (title or content) is required to update'
+            'error': 'At least one field (title, content, or image_url) is required to update'
         }), 400
 
-    post = PostService.update(post_id, title = title, content = content)
+    post = PostService.update(post_id, title = title, content = content, image_url = image_url)
 
     if not post:
         return jsonify({
@@ -94,6 +99,7 @@ def update_post(post_id):
             'id': post.id,
             'title': post.title,
             'content': post.content,
+            'image_url': post.image_url,
             'user_id': post.user_id
         }
     }), 200

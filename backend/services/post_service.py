@@ -1,6 +1,5 @@
 from models import db, Post, User
 
-
 class PostService:
     @staticmethod
     def get_all():
@@ -11,20 +10,20 @@ class PostService:
         return Post.query.get(post_id)
 
     @staticmethod
-    def create(title, content, user_id):
+    def create(title, content, user_id, image_url = None):
         user = User.query.get(user_id)
 
         if not user:
             raise ValueError('User not found')
 
-        post = Post(title = title, content = content, user_id = user_id)
+        post = Post(title = title, content = content, user_id = user_id, image_url = image_url)
         db.session.add(post)
         db.session.commit()
 
         return post
 
     @staticmethod
-    def update(post_id, title = None, content = None):
+    def update(post_id, title = None, content = None, image_url = None):
         post = Post.query.get(post_id)
 
         if not post:
@@ -35,6 +34,9 @@ class PostService:
 
         if content is not None:
             post.content = content
+
+        if image_url is not None:
+            post.image_url = image_url
 
         db.session.commit()
 
