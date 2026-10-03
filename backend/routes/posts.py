@@ -69,7 +69,8 @@ def get_post(post_id):
             'title': post.title,
             'content': post.content,
             'image_url': post.image_url,
-            'user_id': post.user_id
+            'user_id': post.user_id,
+            'author': post.author.username if post.author else None
         }
     }), 200
 
