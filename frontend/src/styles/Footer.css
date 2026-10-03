@@ -1,6 +1,4 @@
 .footer-container {
-  width: 100%;
-
   margin-top: 48px;
 
   padding: 2rem 0;
@@ -8,7 +6,7 @@
   color: var(--white);
   background-color: var(--primary-fg);
 
-  border-top: 1px solid rgba(208, 166, 178, 0.15);
+  border-top: 1px solid rgba(var(--primary-bg-rgb), 0.15);
 }
 
 .footer-content {
@@ -27,7 +25,6 @@
   flex-direction: column;
   flex: 0 1 20rem;
 
-  width: 100%;
   max-width: 20rem;
 }
 
@@ -57,21 +54,18 @@
 }
 
 .footer-description {
-  max-width: 20rem;
-
   margin: 0 0 24px;
 
   font-size: 14.5px;
   line-height: 1.65;
 
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(var(--white-rgb), 0.85);
 }
 
 .footer-copyright {
   margin: 0;
 
   font-size: 12.5px;
-  letter-spacing: 0.02em;
 
   color: var(--primary-bg);
 }
@@ -105,7 +99,7 @@
 
 .footer-link {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(var(--white-rgb), 0.85);
   transition: color var(--transition-base);
 }
 
@@ -141,7 +135,7 @@
 
   font-size: 14px;
 
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(var(--white-rgb), 0.85);
 
   transition: color var(--transition-base);
 }

@@ -7,11 +7,11 @@ class PostService:
 
     @staticmethod
     def get_by_id(post_id):
-        return Post.query.get(post_id)
+        return db.session.get(Post, post_id)
 
     @staticmethod
     def create(title, content, user_id, image_url = None):
-        user = User.query.get(user_id)
+        user = db.session.get(User, user_id)
 
         if not user:
             raise ValueError('User not found')
@@ -24,7 +24,7 @@ class PostService:
 
     @staticmethod
     def update(post_id, title = None, content = None, image_url = None):
-        post = Post.query.get(post_id)
+        post = db.session.get(Post, post_id)
 
         if not post:
             return None
@@ -44,7 +44,7 @@ class PostService:
 
     @staticmethod
     def delete(post_id):
-        post = Post.query.get(post_id)
+        post = db.session.get(Post, post_id)
 
         if not post:
             return False

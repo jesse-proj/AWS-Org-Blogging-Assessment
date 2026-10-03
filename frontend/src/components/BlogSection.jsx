@@ -22,14 +22,18 @@ export default function BlogSection() {
         if (!isMounted) {
           return;
         }
+
         let fetchedPosts;
+
         if (Array.isArray(data.posts)) {
           fetchedPosts = data.posts;
         }
         else {
           fetchedPosts = [];
         }
+
         const sorted = fetchedPosts.slice().sort((a, b) => b.id - a.id);
+
         setPosts(sorted);
         setLoading(false);
       })
@@ -48,26 +52,27 @@ export default function BlogSection() {
   }, []);
 
   useEffect(() => {
-    function reveal() {
-      const reveals = document.querySelectorAll('.reveal');
-      for (let i = 0; i < reveals.length; i++) {
-        const windowHeight = window.innerHeight;
-        const elementTop = reveals[i].getBoundingClientRect().top;
-
-        if (elementTop < windowHeight) {
-          reveals[i].classList.add('active');
-        } 
-        else {
-          reveals[i].classList.remove('active');
-        }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+          } else {
+            entry.target.classList.remove('active');
+          }
+        });
+      },
+      {
+        rootMargin: '0px 0px -40px 0px',
+        threshold: 0.1,
       }
-    }
+    );
 
-    window.addEventListener('scroll', reveal);
-    reveal();
+    const reveals = document.querySelectorAll('.reveal');
+    reveals.forEach((el) => observer.observe(el));
 
     return () => {
-      window.removeEventListener('scroll', reveal);
+      observer.disconnect();
     };
   }, [posts]);
 

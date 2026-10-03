@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import create_access_token, jwt_required, current_user
 from services import AuthService
 
 auth_blueprint = Blueprint('auth', __name__)
@@ -16,9 +17,11 @@ def register():
 
     try:
         user = AuthService.register(username, password)
+        access_token = create_access_token(identity=str(user.id), additional_claims={'username': user.username})
 
         return jsonify({
             'message': 'User registered successfully',
+            'access_token': access_token,
             'user': {
                 'id': user.id,
                 'username': user.username
@@ -49,8 +52,11 @@ def login():
             'error': 'Invalid username or password'
         }), 401
 
+    access_token = create_access_token(identity=str(user.id), additional_claims={'username': user.username})
+
     return jsonify({
         'message': 'Login successful',
+        'access_token': access_token,
         'user': {
             'id': user.id,
             'username': user.username
@@ -59,24 +65,11 @@ def login():
 
 
 @auth_blueprint.get('/me')
+@jwt_required()
 def get_current_user():
-    user_id = request.args.get('user_id', type = int)
-
-    if not user_id:
-        return jsonify({
-            'error': 'user_id query parameter is required'
-        }), 400
-
-    user = AuthService.get_by_id(user_id)
-
-    if not user:
-        return jsonify({
-            'error': 'User not found'
-        }), 404
-
     return jsonify({
         'user': {
-            'id': user.id,
-            'username': user.username
+            'id': current_user.id,
+            'username': current_user.username
         }
     }), 200

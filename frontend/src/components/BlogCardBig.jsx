@@ -4,14 +4,11 @@ import { Link } from 'react-router-dom';
 export default function BlogCardBig({ post }) {
   return (
     <article className='blog-card-big reveal'>
-      <Link
-        to={`/post/${post.id}`}
-        style={{ textDecoration: 'none', color: 'inherit', display: 'block', cursor: 'pointer' }}
-      >
+      <Link to={`/post/${post.id}`} className='blog-card-link'>
         <div className='blog-card-big-inner'>
           <div className='blog-card-big-image-wrapper'>
             <img
-              src={post.image_url || '/space.png'}
+              src={post.image_url || '/home_hero.png'}
               alt={post.title}
               className='blog-card-big-image'
             />

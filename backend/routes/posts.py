@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, current_user
 from services import PostService
 
 posts_blueprint = Blueprint('posts', __name__)
@@ -22,20 +23,20 @@ def list_posts():
 
 
 @posts_blueprint.post('/create')
+@jwt_required()
 def create_post():
     data = request.get_json(silent = True) or {}
     title = data.get('title')
     content = data.get('content')
-    user_id = data.get('user_id')
     image_url = data.get('image_url')
 
-    if not title or not content or not user_id:
+    if not title or not content:
         return jsonify({
-            'error': 'Title, content, and user_id are required'
+            'error': 'Title and content are required'
         }), 400
 
     try:
-        post = PostService.create(title, content, user_id, image_url = image_url)
+        post = PostService.create(title, content, current_user.id, image_url = image_url)
 
         return jsonify({
             'message': 'Post created successfully',
@@ -76,6 +77,7 @@ def get_post(post_id):
 
 
 @posts_blueprint.route('/<int:post_id>', methods = ['PUT', 'PATCH'])
+@jwt_required()
 def update_post(post_id):
     data = request.get_json(silent = True) or {}
     title = data.get('title')
@@ -87,12 +89,19 @@ def update_post(post_id):
             'error': 'At least one field (title, content, or image_url) is required to update'
         }), 400
 
-    post = PostService.update(post_id, title = title, content = content, image_url = image_url)
+    post = PostService.get_by_id(post_id)
 
     if not post:
         return jsonify({
             'error': 'Post not found'
         }), 404
+
+    if post.user_id != current_user.id:
+        return jsonify({
+            'error': 'Forbidden: You can only edit your own posts'
+        }), 403
+
+    post = PostService.update(post_id, title = title, content = content, image_url = image_url)
 
     return jsonify({
         'message': 'Post updated successfully',
@@ -107,14 +116,23 @@ def update_post(post_id):
 
 
 @posts_blueprint.delete('/<int:post_id>')
+@jwt_required()
 def delete_post(post_id):
-    deleted = PostService.delete(post_id)
+    post = PostService.get_by_id(post_id)
 
-    if not deleted:
+    if not post:
         return jsonify({
             'error': 'Post not found'
         }), 404
 
+    if post.user_id != current_user.id:
+        return jsonify({
+            'error': 'Forbidden: You can only delete your own posts'
+        }), 403
+
+    PostService.delete(post_id)
+
     return jsonify({
         'message': 'Post deleted successfully'
     }), 200
+

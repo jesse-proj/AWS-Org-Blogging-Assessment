@@ -1,17 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function BlogCardSmall({ post }) {
+export default function BlogCardSmall({ post, reveal = true }) {
   return (
-    <article className='blog-card-small-wrapper reveal'>
-      <Link
-        to={`/post/${post.id}`}
-        style={{ textDecoration: 'none', color: 'inherit', display: 'block', cursor: 'pointer' }}
-      >
+    <article className={`blog-card-small-wrapper ${reveal ? 'reveal' : ''}`}>
+      <Link to={`/post/${post.id}`} className='blog-card-link'>
         <div className='blog-card-small'>
           <div className='blog-card-small-thumb-wrapper'>
             <img
-              src={post.image_url || '/space.png'}
+              src={post.image_url || '/home_hero.png'}
               alt={post.title}
               className='blog-card-small-thumb'
             />
@@ -24,7 +21,7 @@ export default function BlogCardSmall({ post }) {
         </div>
       </Link>
 
-      <div className='blog-card-divider' />
+      <hr className='blog-card-divider' />
     </article>
   );
 }

@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 from services import CommentService
 
 comments_blueprint = Blueprint('comments', __name__)
@@ -53,6 +54,7 @@ def add_comment(post_id):
 
 
 @comments_blueprint.delete('/comments/<int:comment_id>')
+@jwt_required()
 def delete_comment(comment_id):
     deleted = CommentService.delete(comment_id)
 

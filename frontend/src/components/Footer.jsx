@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faXTwitter, faGithub } from '@fortawesome/free-brands-svg-icons';
@@ -23,25 +24,19 @@ export default function Footer() {
           <div className='footer-sitemap-columns'>
             <ul className='footer-links-list'>
               <li className='footer-link-item'>
-                <a href='#home' className='footer-link'>Home</a>
+                <Link to='/' className='footer-link'>Home</Link>
               </li>
               <li className='footer-link-item'>
-                <a href='#posts' className='footer-link'>Blog Posts</a>
-              </li>
-              <li className='footer-link-item'>
-                <a href='#about' className='footer-link'>About</a>
+                <Link to='/about' className='footer-link'>About</Link>
               </li>
             </ul>
 
             <ul className='footer-links-list'>
               <li className='footer-link-item'>
-                <a href='#login' className='footer-link'>Login</a>
+                <Link to='/login' className='footer-link'>Login</Link>
               </li>
               <li className='footer-link-item'>
-                <a href='#create-post' className='footer-link'>Create Post</a>
-              </li>
-              <li className='footer-link-item'>
-                <a href='#register' className='footer-link'>Register</a>
+                <Link to='/publish' className='footer-link'>Create Post</Link>
               </li>
             </ul>
           </div>

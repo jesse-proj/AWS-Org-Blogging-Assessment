@@ -1,53 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import '../styles/BioWindow.css';
 
 export default function BioWindow() {
-  const [scrollY,   setScrollY]     = useState(0);
-  const [showAlert, setShowAlert]   = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const windowRef = useRef(null);
 
   useEffect(() => {
     let ticking = false;
 
+    const updateScrollEffect = () => {
+      const scrollY = window.scrollY;
+      const translateY = Math.max(0, scrollY * 0.45);
+      const opacity = Math.max(0, Math.min(1, 1 - scrollY / 380));
+      const pointerEvents = opacity <= 0.05 ? 'none' : 'auto';
+
+      if (windowRef.current) {
+        windowRef.current.style.transform = `translateY(${translateY}px)`;
+        windowRef.current.style.opacity = opacity;
+        windowRef.current.style.pointerEvents = pointerEvents;
+      }
+      ticking = false;
+    };
+
     const handleScroll = () => {
       if (!ticking) {
-        window.requestAnimationFrame(() => {
-          setScrollY(window.scrollY);
-          ticking = false;
-        });
+        window.requestAnimationFrame(updateScrollEffect);
         ticking = true;
       }
     };
 
-    window.addEventListener(
-      'scroll',
-      handleScroll,
-      {passive: true}
-    );
-
-    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    updateScrollEffect();
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-
-  const translateY = Math.max(0, scrollY * 0.45);
-  const opacity = Math.max(0, Math.min(1, 1 - scrollY / 380));
-  let pointerEvents;
-  if (opacity <= 0.05) {
-    pointerEvents = 'none';
-  }
-  else {
-    pointerEvents = 'auto';
-  }
-
-  const scrollEffectStyle = {
-    transform: `translateY(${translateY}px)`,
-    opacity,
-    pointerEvents,
-  };
 
   const handleClose = () => {
     setShowAlert(true);
@@ -58,7 +48,7 @@ export default function BioWindow() {
   };
 
   return (
-    <div className='bio-window' style={scrollEffectStyle}>
+    <div id='about' ref={windowRef} className='bio-window'>
       <div className='bio-window-titlebar'>
         <span className='bio-window-title'>Jesse's Bio</span>
         <button

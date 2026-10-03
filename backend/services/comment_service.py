@@ -3,7 +3,7 @@ from models import db, Comment, Post
 class CommentService:
     @staticmethod
     def get_by_post(post_id):
-        post = Post.query.get(post_id)
+        post = db.session.get(Post, post_id)
 
         if not post:
             return None
@@ -12,7 +12,7 @@ class CommentService:
 
     @staticmethod
     def create(post_id, content):
-        post = Post.query.get(post_id)
+        post = db.session.get(Post, post_id)
 
         if not post:
             raise ValueError('Post not found')
@@ -25,7 +25,7 @@ class CommentService:
 
     @staticmethod
     def delete(comment_id):
-        comment = Comment.query.get(comment_id)
+        comment = db.session.get(Comment, comment_id)
 
         if not comment:
             return False
